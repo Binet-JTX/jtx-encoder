@@ -164,7 +164,6 @@ goto:eof
 title= ---- Encodeur du JTX ---- Encodage de %1 en FullHD
 move %1 Originaux/
 ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 8M -r 25 -s 1920x1080 -x264opts level=4 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
-pause
 goto:eof
 :hd
 title= ---- Encodeur du JTX ---- Encodage de %1 en HD

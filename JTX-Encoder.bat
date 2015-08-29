@@ -1,7 +1,19 @@
 @echo off
 title= ---- Encodeur du JTX ----
-color 0C
+color 0D
 cls
+where ffpmeg
+if %errorlevel% neq 0 (
+	cls
+	color 0C
+	echo La commande ffmpeg ne peut pas ˆtre ex‚cut‚e actuellement.
+	echo.
+	echo Pour faire marcher l'encodeur, ajoute le chemin vers ffmpeg.exe
+	echo dans la variable systŠme PATH et relance le programme.
+	echo.
+	pause
+	exit
+)
 echo  ******************************************************
 echo  ****************** Encodeur du JTX *******************
 echo  ******************************************************
@@ -84,22 +96,22 @@ goto:eof
 :fullhd
 title= ---- Encodeur du JTX ---- Encodage de %1 en FullHD
 move %1 Originaux/
-ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 8M -maxrate 12M -r 25 -s 1920x1080 -x264opts level=4 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg -i Originaux/%1 -threads 0 -c:v libx264 -b:v 8M -maxrate 12M -r 25 -s 1920x1080 -x264opts level=4 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 :hd
 title= ---- Encodeur du JTX ---- Encodage de %1 en HD
 move %1 Originaux/
-ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 3M -maxrate 4.5M -r 25 -s 1280x720 -x264opts level=3.1 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg -i Originaux/%1 -threads 0 -c:v libx264 -b:v 3M -maxrate 4.5M -r 25 -s 1280x720 -x264opts level=3.1 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 :web
 title= ---- Encodeur du JTX ---- Encodage de %1 au format Web
 move %1 Originaux/
-ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -maxrate 2.25M -r 25 -s 854x480 -x264opts level=3 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -maxrate 2.25M -r 25 -s 854x480 -x264opts level=3 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 :archives
 title= ---- Encodeur du JTX ---- Encodage de %1 au format Archives
 move %1 Originaux/
-ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -maxrate 2.25M -r 25 -s  720x576 -x264opts level=3 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -maxrate 2.25M -r 25 -s  720x576 -x264opts level=3 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 
 

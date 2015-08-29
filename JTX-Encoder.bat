@@ -25,8 +25,10 @@ echo    ******************************************************
 echo.
 echo    Ce programme encode les vid‚os du dossier dans lequel
 echo    il est plac‚, puis transfŠre les fichiers originaux 
-echo    dans un dossier Originaux/. 
-echo    Aucune vid‚o n'est donc supprim‚e.
+echo    dans un dossier Originaux/. Aucune vid‚o n'est donc supprim‚e.
+echo.
+echo	Assure-toi d'ex‚cuter ce programme dans un dossier o— tu as les
+echo	droits dex‚cution sur tous les fichiers.
 echo.
 echo    Voici la liste des formats d'encodage disponibles :
 echo    1 : FullHD   1920x1080 8 Mbits/s   25 i/s
@@ -162,6 +164,7 @@ goto:eof
 title= ---- Encodeur du JTX ---- Encodage de %1 en FullHD
 move %1 Originaux/
 ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 8M -r 25 -s 1920x1080 -x264opts level=4 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+pause
 goto:eof
 :hd
 title= ---- Encodeur du JTX ---- Encodage de %1 en HD

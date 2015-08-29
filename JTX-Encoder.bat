@@ -1,6 +1,23 @@
+::============================================================
+::=============== Programme d'encodage du JTX ================
+::============================================================
+::====== Par Denis Merigoux, inspirÇ de Nicolas Breton =======
+::============================================================
+
+::ffmpeg v2.7.2 doit àtre placÇ dans le màme dossier que le .bat pour que celui-ci fonctionne.
+::Alternativement, on packagera le .bat et ffmpeg.exe Ö l'intÇrieur d'un unique .exe
+::Ö l'aide de http://www.f2ko.de/en/b2e.php pour plus de portabilitÇ et de protection du code.
+
+
+
+
+::On se rÇfärera au site http://ss64.com/ pour la documentation des commandes batch
 @echo off
+::Titre de la fenàtre de ligne de commande.
 title= ---- Encodeur du JTX ----
+::Couleur du texte et du fond
 color 0D
+::Efface l'Çcran
 cls
 echo    ******************************************************
 echo    ****************** Encodeur du JTX *******************
@@ -17,7 +34,10 @@ echo    2 : HD       1280x720  3 Mbits/s   25 i/s
 echo    3 : Web      854x480   1.5 Mbits/s 25 i/s
 echo    4 : Archives 720x576   1.5 Mbits/s 25 i/s
 echo.
+::Affiche un prompt d'une seule touche
 choice /C 1234 /N /M "   SÇlectionez le rÇglage en appuyant sur [1], [2], [3] ou [4] :"
+::RÇcupÇration mystique du rÇsultat de choice
+::L'ordre des if est important (?!)...
 if errorlevel 4 (
 	echo.
 	color 0E
@@ -27,6 +47,7 @@ if errorlevel 4 (
 	echo    ***** Appuie sur un touche pour lancer l'encodage ******
 	echo    ********************************************************
 	pause >nul
+	::Appel de la routine :encoding avec le paramätre 4
 	call :encoding 4
 )
 if errorlevel 3 (
@@ -66,16 +87,22 @@ goto:eof
 
 :encoding
 echo.
+::CrÇer le rÇpertoire des fichiers originaux
 md Originaux
 color 0a
+::Boucle sur tous les fichiers du dossier en cours
+::%%a est le nom du fichier
 for %%a in (*.*) do (
 	call :encodingcheck %1 "%%a"
 )
+::Lors de l'exÇcution, le goto amäne le programme au label :end.
 goto:end
 
+::VÇrifie si le fichier peut àtre encodÇ
 :encodingcheck
 set toencode="false"
 set extension="%~x2"
+::Ci dessous une liste d'extensions correspondant Ö tous les formats vidÇos usuels
 if %extension%==".mkv" set toencode="true"
 if %extension%==".MKV" set toencode="true"
 if %extension%==".avi" set toencode="true"
@@ -98,28 +125,58 @@ if %toencode%=="true" (
 	if %1==3 call :web %2
 	if %1==4 call :archives %2
 )
+::Le label :eof est prÇdefini et permet de retourner Ö l'endroit du code oó la routine a ÇtÇ appelÇe.
 goto:eof
 
+::Ci dessous les commandes d'encodage qui font appel Ö ffmpeg v2.7.2 (https://www.ffmpeg.org/)
+::Liste des paramätres utilisÇs par les commandes :
+::	-i <input>
+::		Fichier original Ö encoder.
+::	-threads <number>
+::		Nombre de CPU utilisÇs pour rÇaliser l'encodage. Si 0, un maximum de CPU sont utilisÇs.
+::	-c:v <codec>
+::		Codec vidÇo, le JTX a choisi d'utiliser H.264 implÇmentÇ par la librairie libx264.
+::	-b:v <number>
+::		Bitrate de la vidÇo en sortie, exprimÇ en bits.
+::	-r <number>
+::		Framerate de la vidÇo en sortie.
+::	-s <width>x<hright>
+::		RÇsolution de la vidÇo en sortie, exprimÇe en pixels.
+::	-x264opts <options>
+::		Permet de spÇcifier des options pour la libraire libx264. En l'occurence, on dÇtermine
+::		ici le level de l'encodage H.264. Plus d'infos ici : https://fr.wikipedia.org/wiki/H.264#Niveaux.
+::	-pix_fmt <format>
+::		Format d'encodage des pixels. yuv420p est spÇcifiÇ ici car sinon les vidÇos ne sont pas
+::		lisibles par Windows Media Player. Plus d'infos ici : https://ffmpeg.zeranoe.com/forum/viewtopic.php?t=709.
+::	-c:a <codec>
+::		Codec audio de la vidÇo en sortie. Le JTX a choisi AAC.
+::	-strict <strictness>
+::		Le codec audio AAC Çtant une fonctionnalitÇ expÇrimentale pour ffmpeg 2.7.2, il est nÇcessaire
+::		de rÇgler ce paramätre sur experimental.
+::	-b:a <number>
+::		Bitrate de l'audio en sortie. Le JTX a choisi 192k.
+::	-y
+::		êcrase automatiquement les fichiers en sortie s'ils existent dÇjÖ (pas de prompt).
 
 :fullhd
 title= ---- Encodeur du JTX ---- Encodage de %1 en FullHD
 move %1 Originaux/
-ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 8M -maxrate 12M -r 25 -s 1920x1080 -x264opts level=4 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 8M -r 25 -s 1920x1080 -x264opts level=4 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 :hd
 title= ---- Encodeur du JTX ---- Encodage de %1 en HD
 move %1 Originaux/
-ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 3M -maxrate 4.5M -r 25 -s 1280x720 -x264opts level=3.1 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 3M -r 25 -s 1280x720 -x264opts level=3.1 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 :web
 title= ---- Encodeur du JTX ---- Encodage de %1 au format Web
 move %1 Originaux/
-ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -maxrate 2.25M -r 25 -s 854x480 -x264opts level=3 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -r 25 -s 854x480 -x264opts level=3 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 :archives
 title= ---- Encodeur du JTX ---- Encodage de %1 au format Archives
 move %1 Originaux/
-ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -maxrate 2.25M -r 25 -s  720x576 -x264opts level=3 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -r 25 -s  720x576 -x264opts level=3 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 
 

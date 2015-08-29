@@ -2,56 +2,64 @@
 title= ---- Encodeur du JTX ----
 color 0D
 cls
-where ffpmeg
-if %errorlevel% neq 0 (
-	cls
-	color 0C
-	echo La commande ffmpeg ne peut pas ˆtre ex‚cut‚e actuellement.
-	echo.
-	echo Pour faire marcher l'encodeur, ajoute le chemin vers ffmpeg.exe
-	echo dans la variable systŠme PATH et relance le programme.
-	echo.
-	pause
-	exit
-)
-echo  ******************************************************
-echo  ****************** Encodeur du JTX *******************
-echo  ******************************************************
+echo    ******************************************************
+echo    ****************** Encodeur du JTX *******************
+echo    ******************************************************
 echo.
-echo Ce programme encode les vid‚os du dossier dans lequel
-echo il est plac‚, puis transfŠre les fichiers originaux 
-echo dans un dossier Originaux/. 
-echo Aucune vid‚o n'est donc supprim‚e.
+echo    Ce programme encode les vid‚os du dossier dans lequel
+echo    il est plac‚, puis transfŠre les fichiers originaux 
+echo    dans un dossier Originaux/. 
+echo    Aucune vid‚o n'est donc supprim‚e.
 echo.
-echo 1 : FullHD   1920x1080 8 Mbits/s   25 i/s
-echo 2 : HD       1280x720  3 Mbits/s   25 i/s
-echo 3 : Web      854x480   1.5 Mbits/s 25 i/s
-echo 4 : Archives 720x576   1.5 Mbits/s 25 i/s
-
-choice /C 1234 /N /M "S‚lectionez le r‚glage en appuyant sur [1], [2], [3] ou [4] :"
+echo    Voici la liste des formats d'encodage disponibles :
+echo    1 : FullHD   1920x1080 8 Mbits/s   25 i/s
+echo    2 : HD       1280x720  3 Mbits/s   25 i/s
+echo    3 : Web      854x480   1.5 Mbits/s 25 i/s
+echo    4 : Archives 720x576   1.5 Mbits/s 25 i/s
 echo.
+choice /C 1234 /N /M "   S‚lectionez le r‚glage en appuyant sur [1], [2], [3] ou [4] :"
 if errorlevel 4 (
-	echo ********************************************************
-	echo Encodage au format Archives : 720x576 1.5 Mbits/s 25 i/s
-	echo ********************************************************
+	echo.
+	color 0E
+	echo    ********************************************************
+	echo    Encodage au format Archives : 720x576 1.5 Mbits/s 25 i/s
+	echo    ********************************************************
+	echo    ***** Appuie sur un touche pour lancer l'encodage ******
+	echo    ********************************************************
+	pause >nul
 	call :encoding 4
 )
 if errorlevel 3 (
-	echo ***************************************************
-	echo Encodage au format Web : 854x480 1.5 Mbits/s 25 i/s
-	echo ***************************************************
+	echo.
+	color 0E
+	echo    ********************************************************
+	echo    * Encodage au format Web : 854x480 1.5 Mbits/s 25 i/s **
+	echo    ********************************************************
+	echo    ***** Appuie sur un touche pour lancer l'encodage ******
+	echo    ********************************************************
+	pause >nul
 	call :encoding 3
 )
 if errorlevel 2 (
-	echo ******************************************
-	echo Encodage en HD : 1280x720 3 Mbits/s 25 i/s
-	echo ******************************************
+	echo.
+	color 0E
+	echo    ********************************************************
+	echo    ****** Encodage en HD : 1280x720 3 Mbits/s 25 i/s ******
+	echo    ********************************************************
+	echo    ***** Appuie sur un touche pour lancer l'encodage ******
+	echo    ********************************************************
+	pause >nul
 	call :encoding 2
 )
 if errorlevel 1 (
-	echo ***********************************************
-	echo Encodage en FullHD : 1920x1080 8 Mbits/s 25 i/s
-	echo ***********************************************
+	echo.
+	color 0E
+	echo    ********************************************************
+	echo    **** Encodage en FullHD : 1920x1080 8 Mbits/s 25 i/s ***
+	echo    ********************************************************
+	echo    ***** Appuie sur un touche pour lancer l'encodage ******
+	echo    ********************************************************
+	pause >nul
 	call :encoding 1
 )
 goto:eof
@@ -96,22 +104,22 @@ goto:eof
 :fullhd
 title= ---- Encodeur du JTX ---- Encodage de %1 en FullHD
 move %1 Originaux/
-ffmpeg -i Originaux/%1 -threads 0 -c:v libx264 -b:v 8M -maxrate 12M -r 25 -s 1920x1080 -x264opts level=4 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 8M -maxrate 12M -r 25 -s 1920x1080 -x264opts level=4 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 :hd
 title= ---- Encodeur du JTX ---- Encodage de %1 en HD
 move %1 Originaux/
-ffmpeg -i Originaux/%1 -threads 0 -c:v libx264 -b:v 3M -maxrate 4.5M -r 25 -s 1280x720 -x264opts level=3.1 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 3M -maxrate 4.5M -r 25 -s 1280x720 -x264opts level=3.1 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 :web
 title= ---- Encodeur du JTX ---- Encodage de %1 au format Web
 move %1 Originaux/
-ffmpeg -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -maxrate 2.25M -r 25 -s 854x480 -x264opts level=3 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -maxrate 2.25M -r 25 -s 854x480 -x264opts level=3 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 :archives
 title= ---- Encodeur du JTX ---- Encodage de %1 au format Archives
 move %1 Originaux/
-ffmpeg -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -maxrate 2.25M -r 25 -s  720x576 -x264opts level=3 -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 1.5M -maxrate 2.25M -r 25 -s  720x576 -x264opts level=3 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 
 
@@ -120,16 +128,17 @@ color 0b
 title= ---- Encodeur du JTX ---- Encodage termine
 cls
 echo.
-echo ***************************
-echo **** Fin de l'encodage ****
-echo ***************************
+echo    ***************************
+echo    **** Fin de l'encodage ****
+echo    ***************************
 echo.
-echo Les fichiers originaux se trouvent dans le dossier
-echo Originaux/
+echo    Les fichiers originaux se trouvent dans le dossier
+echo    Originaux/
 echo.
-echo Merci d'avoir choisi l'encodeur du JTX !
+echo    Merci d'avoir choisi l'encodeur du JTX !
 echo.
-Pause
+echo    Appuie sur une touche pour quitter le programme.
+pause >nul
 exit
 
 

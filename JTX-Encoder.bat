@@ -107,20 +107,61 @@ set extension="%~x2"
 ::Ci dessous une liste d'extensions correspondant … tous les formats vid‚os usuels
 if %extension%==".mkv" set toencode="true"
 if %extension%==".MKV" set toencode="true"
+
+if %extension%==".wmv" set toencode="true"
+if %extension%==".WMV" set toencode="true"
+
+if %extension%==".ogm" set toencode="true"
+if %extension%==".OGM" set toencode="true"
+
+if %extension%==".3gp" set toencode="true"
+if %extension%==".3GP" set toencode="true"
+
+if %extension%==".ts" set toencode="true"
+if %extension%==".TS" set toencode="true"
+
+if %extension%==".m2ts" set toencode="true"
+if %extension%==".M2TS" set toencode="true"
+
+if %extension%==".flv" set toencode="true"
+if %extension%==".FLV" set toencode="true"
+
+if %extension%==".m4v" set toencode="true"
+if %extension%==".M4V" set toencode="true"
+
+if %extension%==".mvi" set toencode="true"
+if %extension%==".MVI" set toencode="true"
+
+if %extension%==".mka" set toencode="true"
+if %extension%==".MKA" set toencode="true"
+
+if %extension%==".dvix" set toencode="true"
+if %extension%==".DVIX" set toencode="true"
+
+if %extension%==".mks" set toencode="true"
+if %extension%==".MKS" set toencode="true"
+
 if %extension%==".avi" set toencode="true"
 if %extension%==".AVI" set toencode="true"
+
 if %extension%==".mpg" set toencode="true"
 if %extension%==".MPG" set toencode="true"
+
 if %extension%==".webm" set toencode="true"
 if %extension%==".WEBM" set toencode="true"
+
 if %extension%==".mp4" set toencode="true"
 if %extension%==".MP4" set toencode="true"
+
 if %extension%==".mov" set toencode="true"
 if %extension%==".MOV" set toencode="true"
+
 if %extension%==".mts" set toencode="true"
 if %extension%==".MTS" set toencode="true"
+
 if %extension%==".mxf" set toencode="true"
 if %extension%==".MXF" set toencode="true"
+
 if %toencode%=="true" (
 	if %1==1 call :fullhd %2
 	if %1==2 call :hd %2

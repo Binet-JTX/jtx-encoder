@@ -31,7 +31,7 @@ echo	Assure-toi d'ex‚cuter ce programme dans un dossier o— tu as les
 echo	droits dex‚cution sur tous les fichiers.
 echo.
 echo    Voici la liste des formats d'encodage disponibles :
-echo    1 : FullHD   1920x1080 8 Mbits/s   25 i/s
+echo    1 : FullHD   1920x1080 10 Mbits/s  25 i/s
 echo    2 : HD       1280x720  3 Mbits/s   25 i/s
 echo    3 : Web      854x480   1.5 Mbits/s 25 i/s
 echo    4 : Archives 720x576   1.5 Mbits/s 25 i/s
@@ -78,7 +78,7 @@ if errorlevel 1 (
 	echo.
 	color 0E
 	echo    ********************************************************
-	echo    **** Encodage en FullHD : 1920x1080 8 Mbits/s 25 i/s ***
+	echo    *** Encodage en FullHD : 1920x1080 10 Mbits/s 25 i/s ***
 	echo    ********************************************************
 	echo    ***** Appuie sur un touche pour lancer l'encodage ******
 	echo    ********************************************************
@@ -128,6 +128,10 @@ if %extension%==".FLV" set toencode="true"
 
 if %extension%==".m4v" set toencode="true"
 if %extension%==".M4V" set toencode="true"
+
+
+if %extension%==".rm" set toencode="true"
+if %extension%==".RM" set toencode="true"
 
 if %extension%==".mvi" set toencode="true"
 if %extension%==".MVI" set toencode="true"
@@ -204,7 +208,7 @@ goto:eof
 :fullhd
 title= ---- Encodeur du JTX ---- Encodage de %1 en FullHD
 move %1 Originaux/
-ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 8M -r 25 -s 1920x1080 -x264opts level=4 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
+ffmpeg.exe -i Originaux/%1 -threads 0 -c:v libx264 -b:v 10M -r 25 -s 1920x1080 -x264opts level=4 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y "%~np1.mp4"
 goto:eof
 :hd
 title= ---- Encodeur du JTX ---- Encodage de %1 en HD
@@ -232,8 +236,11 @@ echo    ***************************
 echo    **** Fin de l'encodage ****
 echo    ***************************
 echo.
+echo    L'encodage du dossier suivant est termin‚ :
+echo    %cd%
+echo.
 echo    Les fichiers originaux se trouvent dans le dossier
-echo    Originaux/
+echo    Originaux/.
 echo.
 echo    Merci d'avoir choisi l'encodeur du JTX !
 echo.

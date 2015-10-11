@@ -335,7 +335,7 @@ if %toencode%=="true" (
 	if %1==2 call :hd "%~2" "%~np2_encode.mp4"
 	if %1==3 call :web "%~2" "%~np2_encode.mp4"
 	if %1==4 call :archives "%~2" "%~np2_encode.mp4"
-	del "%~2"
+	IF NOT ERRORLEVEL 1 del "%~2"
 )
 ::Le label :eof est pr‚defini et permet de retourner … l'endroit du code o— la routine a ‚t‚ appel‚e.
 goto:eof
@@ -378,7 +378,6 @@ goto:eof
 
 :fullhd
 title= ---- Encodeur du JTX ---- Encodage de %1 en FullHD
-
 ffmpeg.exe -i %1 -threads 0 -c:v libx264 -b:v 10M -r 25 -s 1920x1080 -x264opts level=4 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y %2
 goto:eof
 :hd

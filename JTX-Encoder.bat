@@ -386,7 +386,6 @@ ffmpeg.exe -i %1 -threads 0 -c:v libx264 -b:v 3M -r 25 -s 1280x720 -x264opts lev
 goto:eof
 :web
 title= ---- Encodeur du JTX ---- Encodage de %1 au format Web
-move %1 Originaux/
 ffmpeg.exe -i %1 -threads 0 -c:v libx264 -b:v 1.5M -r 25 -s 854x480 -x264opts level=3 -pix_fmt yuv420p -c:a aac -strict experimental -b:a 192k -y %2
 goto:eof
 :archives
